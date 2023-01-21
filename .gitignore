@@ -1,0 +1,9 @@
+CMakeFiles/
+.cache/
+CMakeCache.txt
+Makefile
+*.ttf
+cmake_install.cmake
+compile_commands.json
+pmenu
+
