@@ -4,7 +4,7 @@
 #include "menu.hpp"
 
 
-int main(int argc, const char* argv[]) {
+int main(int, const char**) {
     auto pathFiles = loadFromPath();
 
     Menu menu(pathFiles);
