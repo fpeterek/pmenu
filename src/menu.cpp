@@ -6,7 +6,7 @@
 
 Menu::Menu(std::unordered_map<std::string, std::string> optsArg) : optMap(std::move(optsArg)) {
 
-    font.loadFromFile("MesloLGS NF Regular.ttf");
+    font.loadFromFile("MesloLGS-NF-Regular.ttf");
 
     for (const auto& [opt, _] : optMap) {
         opts.emplace_back(opt);
@@ -67,14 +67,26 @@ uint Menu::promptSigWidth() {
 
 void Menu::onKeyPress(const sf::Event& ev) {
     if (ev.key.code == sf::Keyboard::U and ev.key.control) {
-        promptContents.clear();
+        promptContents = sf::String { "" };
         promptText.setString(promptContents);
     }
 }
 
 void Menu::onTextEntered(const sf::Event& ev) {
-    if (not ev.key.control) {
+    // Backspace
+    if (ev.text.unicode == 8) {
+        // NOOP on empty string
+        if (promptContents.getSize()) {
+            promptContents.erase(promptContents.getSize()-1);
+            promptText.setString(promptContents);
+        }
+    }
+    else if (ev.text.unicode <= 31) {
+        return;
+    }
+    else if (not ev.key.control) {
         promptContents += ev.text.unicode;
+        std::cout << (ev.text.unicode) << std::endl;
         promptText.setString(promptContents);
     }
 }
@@ -86,10 +98,12 @@ void Menu::pollEvents() {
         if (ev.type == sf::Event::Closed) {
             win.close();
         }
-        else if (ev.type == sf::Event::KeyPressed and ev.key.control and ev.key.code == sf::Keyboard::C) {
+        else if (ev.type == sf::Event::KeyPressed and ev.key.control
+                and ev.key.code == sf::Keyboard::C) {
             win.close();
         }
-        else if (ev.type == sf::Event::KeyPressed and ev.key.control and ev.key.code == sf::Keyboard::D) {
+        else if (ev.type == sf::Event::KeyPressed and ev.key.control
+                and ev.key.code == sf::Keyboard::D) {
             win.close();
         }
         else if (ev.type == sf::Event::TextEntered) {
