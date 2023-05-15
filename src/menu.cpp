@@ -67,7 +67,7 @@ uint Menu::promptSigWidth() {
 
 void Menu::onKeyPress(const sf::Event& ev) {
     if (ev.key.code == sf::Keyboard::U and ev.key.control) {
-        promptContents = sf::String { "" };
+        promptContents.clear();
         promptText.setString(promptContents);
     }
 }
@@ -86,7 +86,6 @@ void Menu::onTextEntered(const sf::Event& ev) {
     }
     else if (not ev.key.control) {
         promptContents += ev.text.unicode;
-        std::cout << (ev.text.unicode) << std::endl;
         promptText.setString(promptContents);
     }
 }
