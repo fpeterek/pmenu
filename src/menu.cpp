@@ -2,6 +2,42 @@
 
 #include <algorithm>
 #include <iostream>
+#include <cstring>
+
+
+static std::strong_ordering cicmp(const std::string& fst, const std::string& snd) {
+
+    auto f = fst.begin();
+    auto s = snd.begin();
+
+    while (true) {
+        if (f == fst.end() and s == snd.end()) {
+            return std::strong_ordering::equal;
+        }
+
+        if (f == fst.end()) {
+            return std::strong_ordering::less;
+        }
+
+        if (s == snd.end()) {
+            return std::strong_ordering::greater;
+        }
+
+        auto cmp = std::tolower(static_cast<unsigned char>(*f)) <=> std::tolower(static_cast<unsigned char>(*s));
+
+        if (cmp != std::strong_ordering::equal) {
+            return cmp;
+        }
+
+        ++f;
+        ++s;
+    }
+
+}
+
+static bool less(const std::string& fst, const std::string& snd) {
+    return cicmp(fst, snd) == std::strong_ordering::less;
+}
 
 
 Menu::Menu(std::unordered_map<std::string, std::string> optsArg) : optMap(std::move(optsArg)) {
@@ -12,7 +48,7 @@ Menu::Menu(std::unordered_map<std::string, std::string> optsArg) : optMap(std::m
         opts.emplace_back(opt);
     }
 
-    std::sort(opts.begin(), opts.end());
+    std::sort(opts.begin(), opts.end(), less);
 
     width = sf::VideoMode::getDesktopMode().width;
 
@@ -26,6 +62,19 @@ Menu::Menu(std::unordered_map<std::string, std::string> optsArg) : optMap(std::m
     win.setMouseCursorVisible(false);
     win.requestFocus();
     win.setPosition({0, 0});
+
+    uint optPos = promptWidth();
+
+    for (const auto& opt : opts) {
+        optText.emplace_back();
+        optText.back().setFont(font);
+        optText.back().setCharacterSize(12);
+        optText.back().setPosition(optPos, 2);
+        optText.back().setFillColor(fg);
+        optText.back().setString(opt);
+
+        optPos += optText.back().getGlobalBounds().width + optPadding;
+    }
 
     promptSig.setFillColor(hl);
     promptSig.setPointCount(5);
@@ -41,6 +90,10 @@ Menu::Menu(std::unordered_map<std::string, std::string> optsArg) : optMap(std::m
     promptOutline.setPosition(promptSigWidth() - 8, 2);
     promptOutline.setOutlineColor(hl);
     promptOutline.setOutlineThickness(2.0);
+
+    promptBackground.setSize(sf::Vector2f(promptWidth(), height));
+    promptBackground.setFillColor(bg);
+    promptBackground.setPosition(0, 2);
 
     promptText.setFont(font);
     promptText.setCharacterSize(12);
@@ -120,6 +173,10 @@ void Menu::run() {
         pollEvents();
 
         win.clear(bg);
+        for (const auto& opt : optText) {
+            win.draw(opt);
+        }
+        win.draw(promptBackground);
         win.draw(promptText);
         win.draw(promptSig);
         win.draw(promptOutline);

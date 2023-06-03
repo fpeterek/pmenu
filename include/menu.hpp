@@ -14,6 +14,7 @@ class Menu {
 
     const std::unordered_map<std::string, std::string> optMap;
     std::vector<std::string> opts;
+    std::vector<sf::Text> optText;
 
     sf::RenderWindow win;
     sf::Font font;
@@ -24,11 +25,13 @@ class Menu {
 
     uint width = 0;
     uint height = 20;
+    uint optPadding = 10;
 
     sf::String promptContents;
     sf::Text promptText;
     sf::ConvexShape promptSig;
     sf::RectangleShape promptOutline;
+    sf::RectangleShape promptBackground;
 
     uint padding();
     uint itemsBegin();
