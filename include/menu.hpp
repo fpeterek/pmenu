@@ -1,6 +1,7 @@
 #ifndef MENU_HPP
 #define MENU_HPP
 
+#include "menu_option.hpp"
 #include <filesystem>
 #include <vector>
 #include <unordered_map>
@@ -12,9 +13,11 @@
 
 class Menu {
 
-    const std::unordered_map<std::string, std::string> optMap;
-    std::vector<std::string> opts;
-    std::vector<sf::Text> optText;
+    // const std::unordered_map<std::string, std::string> optMap;
+    // std::vector<std::string> opts;
+    // std::vector<sf::Text> optText;
+
+    std::vector<Option> opts;
 
     sf::RenderWindow win;
     sf::Font font;

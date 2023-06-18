@@ -39,16 +39,9 @@ static bool less(const std::string& fst, const std::string& snd) {
     return cicmp(fst, snd) == std::strong_ordering::less;
 }
 
-
-Menu::Menu(std::unordered_map<std::string, std::string> optsArg) : optMap(std::move(optsArg)) {
+Menu::Menu(std::unordered_map<std::string, std::string> optsArg) {
 
     font.loadFromFile("MesloLGS-NF-Regular.ttf");
-
-    for (const auto& [opt, _] : optMap) {
-        opts.emplace_back(opt);
-    }
-
-    std::sort(opts.begin(), opts.end(), less);
 
     width = sf::VideoMode::getDesktopMode().width;
 
@@ -63,17 +56,26 @@ Menu::Menu(std::unordered_map<std::string, std::string> optsArg) : optMap(std::m
     win.requestFocus();
     win.setPosition({0, 0});
 
+    for (const auto& opt : optsArg) {
+        const auto [text, cmd] = opt;
+
+        sf::Text optText;
+        optText.setFont(font);
+        optText.setCharacterSize(12);
+        optText.setFillColor(fg);
+        optText.setString(text);
+
+        opts.emplace_back(text, cmd, optText);
+    }
+
+    std::sort(opts.begin(), opts.end(), 
+            [](const Option& o1, const Option& o2) -> bool { return less(o1.display, o2.display); });
+
     uint optPos = promptWidth();
 
-    for (const auto& opt : opts) {
-        optText.emplace_back();
-        optText.back().setFont(font);
-        optText.back().setCharacterSize(12);
-        optText.back().setPosition(optPos, 2);
-        optText.back().setFillColor(fg);
-        optText.back().setString(opt);
-
-        optPos += optText.back().getGlobalBounds().width + optPadding;
+    for (auto& opt : opts) {
+        opt.setPosition(optPos, 2);
+        optPos += opt.displayText.getGlobalBounds().width + optPadding;
     }
 
     promptSig.setFillColor(hl);
@@ -173,7 +175,7 @@ void Menu::run() {
         pollEvents();
 
         win.clear(bg);
-        for (const auto& opt : optText) {
+        for (const auto& opt : opts) {
             win.draw(opt);
         }
         win.draw(promptBackground);

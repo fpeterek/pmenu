@@ -22,8 +22,10 @@ add_executable(
 
     include/load_exec.hpp
     include/menu.hpp
+    include/menu_option.hpp
 
     src/load_exec.cpp
     src/main.cpp
     src/menu.cpp
+    src/menu_option.cpp
 )
