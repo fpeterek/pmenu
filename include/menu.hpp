@@ -1,14 +1,17 @@
 #ifndef MENU_HPP
 #define MENU_HPP
 
-#include "menu_option.hpp"
 #include <filesystem>
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <optional>
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+
+#include "menu_option.hpp"
+#include "prompt.hpp"
 
 
 class Menu {
@@ -30,11 +33,7 @@ class Menu {
     uint height = 20;
     uint optPadding = 10;
 
-    sf::String promptContents;
-    sf::Text promptText;
-    sf::ConvexShape promptSig;
-    sf::RectangleShape promptOutline;
-    sf::RectangleShape promptBackground;
+    std::optional<Prompt> prompt;
 
     uint padding();
     uint itemsBegin();

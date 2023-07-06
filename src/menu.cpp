@@ -78,30 +78,8 @@ Menu::Menu(std::unordered_map<std::string, std::string> optsArg) {
         optPos += opt.displayText.getGlobalBounds().width + optPadding;
     }
 
-    promptSig.setFillColor(hl);
-    promptSig.setPointCount(5);
-    promptSig.setPoint(0, { 0, 0 });
-    promptSig.setPoint(1, { promptSigWidth()-10.f, 0 });
-    promptSig.setPoint(2, { (float)promptSigWidth(), height/2.f });
-    promptSig.setPoint(3, { promptSigWidth()-10.f, (float)height });
-    promptSig.setPoint(4, { 0, (float)height });
-
-
-    promptOutline.setSize(sf::Vector2f(promptWidth()-promptSigWidth() - 4, height - 4));
-    promptOutline.setFillColor({0, 0, 0, 0});
-    promptOutline.setPosition(promptSigWidth() - 8, 2);
-    promptOutline.setOutlineColor(hl);
-    promptOutline.setOutlineThickness(2.0);
-
-    promptBackground.setSize(sf::Vector2f(promptWidth(), height));
-    promptBackground.setFillColor(bg);
-    promptBackground.setPosition(0, 2);
-
-    promptText.setFont(font);
-    promptText.setCharacterSize(12);
-    promptText.setPosition(promptSigWidth() + 5, 2);
-    promptText.setFillColor(fg);
-    promptText.setString(promptContents);
+    prompt.emplace(
+        hl, fg, bg, promptWidth(), promptSigWidth(), height, font);
 }
 
 uint Menu::padding() {
@@ -122,26 +100,20 @@ uint Menu::promptSigWidth() {
 
 void Menu::onKeyPress(const sf::Event& ev) {
     if (ev.key.code == sf::Keyboard::U and ev.key.control) {
-        promptContents.clear();
-        promptText.setString(promptContents);
+        prompt->clear();
     }
 }
 
 void Menu::onTextEntered(const sf::Event& ev) {
     // Backspace
     if (ev.text.unicode == 8) {
-        // NOOP on empty string
-        if (promptContents.getSize()) {
-            promptContents.erase(promptContents.getSize()-1);
-            promptText.setString(promptContents);
-        }
+        prompt->eraseChar();
     }
     else if (ev.text.unicode <= 31) {
         return;
     }
     else if (not ev.key.control) {
-        promptContents += ev.text.unicode;
-        promptText.setString(promptContents);
+        prompt->type(ev.text.unicode);
     }
 }
 
@@ -178,10 +150,7 @@ void Menu::run() {
         for (const auto& opt : opts) {
             win.draw(opt);
         }
-        win.draw(promptBackground);
-        win.draw(promptText);
-        win.draw(promptSig);
-        win.draw(promptOutline);
+        win.draw(*prompt);
         win.display();
     }
 }

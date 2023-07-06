@@ -11,6 +11,7 @@ struct Option : public sf::Drawable {
     std::string display;
     std::string command;
     sf::Text displayText;
+    bool selected = false;
 
     Option(std::string display, std::string command, sf::Text displayText);
 
