@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cstring>
+#include <numeric>
 
 
 static std::strong_ordering cicmp(const std::string& fst, const std::string& snd) {
@@ -71,12 +72,15 @@ Menu::Menu(std::unordered_map<std::string, std::string> optsArg) {
     std::sort(opts.begin(), opts.end(), 
             [](const Option& o1, const Option& o2) -> bool { return less(o1.display, o2.display); });
 
-    uint optPos = promptWidth();
+    uint optPos = promptWidth() + optPadding;
 
     for (auto& opt : opts) {
         opt.setPosition(optPos, 2);
         optPos += opt.displayText.getGlobalBounds().width + optPadding;
     }
+
+    std::iota(matches.begin(), matches.end(), 0);
+    opts.front().selected = true;
 
     prompt.emplace(
         hl, fg, bg, promptWidth(), promptSigWidth(), height, font);
@@ -148,6 +152,13 @@ void Menu::run() {
 
         win.clear(bg);
         for (const auto& opt : opts) {
+            if (opt.selected) {
+                sf::RectangleShape rect;
+                rect.setSize({ opt.displayText.getGlobalBounds().width + optPadding, (float)height });
+                rect.setFillColor(hl);
+                rect.setPosition({ opt.displayText.getGlobalBounds().left - optPadding/2.f, 0.f });
+                win.draw(rect);
+            }
             win.draw(opt);
         }
         win.draw(*prompt);

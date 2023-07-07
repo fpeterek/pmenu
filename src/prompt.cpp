@@ -15,9 +15,9 @@ Prompt::Prompt(
     promptSig.setPoint(4, { 0, (float)height });
 
 
-    promptOutline.setSize(sf::Vector2f(width-sigWidth - 4, height - 4));
+    promptOutline.setSize(sf::Vector2f(width - 4, height - 4));
     promptOutline.setFillColor({0, 0, 0, 0});
-    promptOutline.setPosition(sigWidth - 8, 2);
+    promptOutline.setPosition(2, 2);
     promptOutline.setOutlineColor(hl);
     promptOutline.setOutlineThickness(2.0);
 

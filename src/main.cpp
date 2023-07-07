@@ -9,5 +9,4 @@ int main(int, const char**) {
 
     Menu menu(pathFiles);
     menu.run();
-
 }

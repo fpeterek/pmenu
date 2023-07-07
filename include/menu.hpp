@@ -16,11 +16,10 @@
 
 class Menu {
 
-    // const std::unordered_map<std::string, std::string> optMap;
-    // std::vector<std::string> opts;
-    // std::vector<sf::Text> optText;
-
     std::vector<Option> opts;
+    std::vector<size_t> matches;
+    std::vector<size_t> visible;
+    size_t selected = 0;
 
     sf::RenderWindow win;
     sf::Font font;
