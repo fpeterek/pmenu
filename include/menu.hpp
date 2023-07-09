@@ -12,6 +12,7 @@
 
 #include "menu_option.hpp"
 #include "prompt.hpp"
+#include "searcher.hpp"
 
 
 class Menu {
@@ -33,6 +34,8 @@ class Menu {
     uint optPadding = 10;
 
     std::optional<Prompt> prompt;
+
+    Searcher searcher;
 
     uint padding();
     uint itemsBegin();

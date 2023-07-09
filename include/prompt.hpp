@@ -34,6 +34,7 @@ public:
     void eraseChar();
     void type(sf::Uint32 chr);
 
+    std::string contents();
 };
 
 #endif

@@ -60,3 +60,7 @@ void Prompt::type(const sf::Uint32 chr) {
     promptContents += chr;
     updateContents();
 }
+
+std::string Prompt::contents() {
+    return promptContents.toAnsiString();
+}

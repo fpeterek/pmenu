@@ -24,6 +24,7 @@ add_executable(
     include/menu.hpp
     include/menu_option.hpp
     include/prompt.hpp
+    include/searcher.hpp
 
     src/load_exec.cpp
     src/main.cpp

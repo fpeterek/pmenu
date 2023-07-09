@@ -40,7 +40,9 @@ static bool less(const std::string& fst, const std::string& snd) {
     return cicmp(fst, snd) == std::strong_ordering::less;
 }
 
-Menu::Menu(std::unordered_map<std::string, std::string> optsArg) {
+Menu::Menu(std::unordered_map<std::string, std::string> optsArg) :
+    // TODO: Fix searcher initialization
+    searcher(opts) {
 
     font.loadFromFile("MesloLGS-NF-Regular.ttf");
 
@@ -80,7 +82,9 @@ Menu::Menu(std::unordered_map<std::string, std::string> optsArg) {
     }
 
     std::iota(matches.begin(), matches.end(), 0);
-    opts.front().selected = true;
+    if (opts.size()) {
+        opts.front().selected = true;
+    }
 
     prompt.emplace(
         hl, fg, bg, promptWidth(), promptSigWidth(), height, font);
@@ -118,6 +122,18 @@ void Menu::onTextEntered(const sf::Event& ev) {
     }
     else if (not ev.key.control) {
         prompt->type(ev.text.unicode);
+        matches = searcher.search(prompt->contents());
+        opts[selected].selected = false;
+        opts[matches[0]].selected = true;
+        selected = matches[0];
+
+        uint optPos = promptWidth() + optPadding;
+
+        for (const auto idx : matches) {
+            auto& opt = opts[idx];
+            opt.setPosition(optPos, 2);
+            optPos += opt.displayText.getGlobalBounds().width + optPadding;
+        }
     }
 }
 
@@ -151,7 +167,8 @@ void Menu::run() {
         pollEvents();
 
         win.clear(bg);
-        for (const auto& opt : opts) {
+        for (const auto i : matches) {
+            const auto& opt = opts[i];
             if (opt.selected) {
                 sf::RectangleShape rect;
                 rect.setSize({ opt.displayText.getGlobalBounds().width + optPadding, (float)height });
