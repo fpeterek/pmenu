@@ -4,7 +4,7 @@
 
 
 Searcher::Searcher(std::vector<Option>& searchable) :
-    cache({ "", {} }),
+    cache({{ {}, {} }}),
     previous(cache[""]),
     opts(searchable) {
 
@@ -21,7 +21,7 @@ std::vector<size_t> Searcher::search(const std::string& query) {
         return previous;
     }
 
-    auto [iter, _] = cache.emplace(query);
+    auto [iter, _] = cache.emplace(query, std::vector<size_t> {});
     auto& next = iter->second;
 
     for (size_t i : previous.get()) {

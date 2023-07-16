@@ -35,7 +35,7 @@ class Menu {
 
     std::optional<Prompt> prompt;
 
-    Searcher searcher;
+    std::optional<Searcher> searcher;
 
     uint padding();
     uint itemsBegin();

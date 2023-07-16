@@ -40,9 +40,7 @@ static bool less(const std::string& fst, const std::string& snd) {
     return cicmp(fst, snd) == std::strong_ordering::less;
 }
 
-Menu::Menu(std::unordered_map<std::string, std::string> optsArg) :
-    // TODO: Fix searcher initialization
-    searcher(opts) {
+Menu::Menu(std::unordered_map<std::string, std::string> optsArg) {
 
     font.loadFromFile("MesloLGS-NF-Regular.ttf");
 
@@ -88,6 +86,9 @@ Menu::Menu(std::unordered_map<std::string, std::string> optsArg) :
 
     prompt.emplace(
         hl, fg, bg, promptWidth(), promptSigWidth(), height, font);
+
+    searcher.emplace(opts);
+    std::iota(visible.begin(), visible.end(), 0);
 }
 
 uint Menu::padding() {
@@ -122,7 +123,7 @@ void Menu::onTextEntered(const sf::Event& ev) {
     }
     else if (not ev.key.control) {
         prompt->type(ev.text.unicode);
-        matches = searcher.search(prompt->contents());
+        matches = searcher->search(prompt->contents());
         opts[selected].selected = false;
         opts[matches[0]].selected = true;
         selected = matches[0];

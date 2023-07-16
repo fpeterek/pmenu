@@ -31,4 +31,5 @@ add_executable(
     src/menu.cpp
     src/menu_option.cpp
     src/prompt.cpp
+    src/searcher.cpp
 )
