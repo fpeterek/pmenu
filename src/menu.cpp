@@ -125,8 +125,10 @@ void Menu::onTextEntered(const sf::Event& ev) {
         prompt->type(ev.text.unicode);
         matches = searcher->search(prompt->contents());
         opts[selected].selected = false;
-        opts[matches[0]].selected = true;
-        selected = matches[0];
+        if (matches.size()) {
+            opts[matches[0]].selected = true;
+            selected = matches[0];
+        }
 
         uint optPos = promptWidth() + optPadding;
 
